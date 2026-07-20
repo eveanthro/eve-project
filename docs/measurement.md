@@ -2,7 +2,7 @@
 
 The most transferable thing this project has produced. Everything here is a real finding from a live system, described at a level that leaks no implementation.
 
-The premise: **any number a system computes about itself will look plausible long before it means anything.** Four subsystems were audited in one week. All four appeared healthy. All four measured nothing.
+The premise: **any number a system computes about itself will look plausible long before it means anything.** Six subsystems were audited in one week. All six appeared healthy. All six measured nothing — and the sixth was found in the repair of the third.
 
 ---
 
@@ -91,6 +91,42 @@ The reason was not tuning. Its trap-detection function was **referenced in three
 
 ---
 
+## Case 6 — One observation, charged seven times (and a fix that was also wrong)
+
+A variable representing appetite for novelty sat at **exactly zero for 677 of 720 consecutive cycles** — thirteen hours — emitting an identical explanatory line every cycle. Downstream, that variable *was* the system's exploration bias. It had been zero for half a day.
+
+The exploration machinery underneath was **healthy**: six interests, well-spread engagement counts, sensible learned preferences. Nothing was wrong with the system's behavior. The measurement of it was wrong.
+
+Two defects compounded, both introduced by the *fix* in Case 3:
+
+**The same observation was billed repeatedly.** The input read a fixed window of the **last eight journal rows**. New rows arrived every ~13 minutes; the cycle fired every 2 minutes. So the identical eight rows were re-read six or seven times per new entry, and Case 3's per-hour scaling applied a fresh charge on each read — as if the repetition had happened again.
+
+**Raw counts have no ceiling.** The drain reached **−0.28/hour** against the strongest relaxation the variable can generate at the floor, **+0.058/hour**. A **4.8:1** mismatch. This is Case 2's unreachability, mirrored: no amount of genuine exploration could have lifted the value off zero. Case 3 had fixed precisely this shape on a variable pinned at *maximum* and left the mirror image on one pinned at *minimum*.
+
+Note what this means: **the fix for one instance of a bug class created another instance of the same class.** Rate-scaling was correct, and correctly applied to a quantity that was never valid to scale.
+
+### The part worth reading
+
+The first replacement was **distinct topics ÷ entries**. It is bounded in [0,1], idempotent under re-read, and it passed its unit tests.
+
+It was still wrong. That ratio is capped by the size of the interest catalog: six interests across a fourteen-entry window can never exceed **0.43**. Spending *more* time exploring drove the measured novelty *down*. Against real logged data it still settled negative — still pinned at zero. A second unreachable metric, about to ship on top of the first, with green tests.
+
+It was caught by running the candidate metric against the **actual production log** and printing its equilibrium across the entire input range, rather than against hand-built fixtures. The measure that works is the **switch rate** — the share of consecutive entries that changed interest, which reaches 1.0 for any catalog with two or more items:
+
+| switch rate | value settles at |
+|---|---|
+| 0.0 (fully stuck) | 0.05 |
+| 0.5 | 0.50 |
+| 1.0 (fully varied) | 0.95 |
+
+Real behavior now reads **0.19** — honestly low, because the system genuinely *was* grinding one interest. The point is not that the number went up. It is that low is now *reachable from*, instead of absorbing.
+
+> **Rule: validate a replacement metric against production data across its full input range, not against fixtures.** Fixtures confirm the formula you intended. Only real data and a swept range reveal that your intended formula cannot reach the values you assumed it could.
+
+> **Rule: a fix for a bug class is a prime site for the next instance of it.** When you correct one variable that saturated, immediately check the ones that saturate the other way.
+
+---
+
 ## The audit questions
 
 Applied to any self-reported metric:
@@ -102,9 +138,13 @@ Applied to any self-reported metric:
 5. **Was this threshold set against recorded reality or against intuition?**
 6. **Is the measurement apparatus competing with the thing it measures?** Background work sharing a resource with the benchmark degrades the number it is judged by.
 7. **Can the system edit its own reward?** If yes, stop — that is not improvement.
+8. **Is this input read more often than it changes?** If the reader runs faster than the source updates, a rate-scaled input bills one observation many times.
+9. **Has the replacement been swept across its full range on real data?** A bounded formula can still be unable to reach the values you are assuming.
 
 ## The meta-lesson
 
 None of these bugs were exotic. Each was a plausible-looking number produced by a subsystem that had never been asked to prove it could fail. They were found by asking the questions above and then *actually checking* — not by better tooling, not by more tests, and not by anything a linter would catch.
+
+Case 6 is the one that should worry you: it was created by the fix for Case 3, it passed review, and its own first replacement was wrong again and passed unit tests. The discipline is not a checklist you complete. It is a standing habit, and it applies most sharply to the code you wrote while being careful.
 
 The uncomfortable implication: a system's self-reports are the **least** trustworthy data it produces, and they are exactly the data that gets trusted most, because they are the cheapest to collect and the most flattering to read.

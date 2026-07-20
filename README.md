@@ -37,7 +37,7 @@ Most AI systems are a single model behind an API. Eve is a small society with a 
 
 This is the real contribution, and it generalizes far beyond this project.
 
-**Introspective metrics lie by default.** Any number a system computes about itself will look plausible long before it means anything. Over one week of auditing, four separate subsystems that *appeared* to be working were found to be measuring nothing:
+**Introspective metrics lie by default.** Any number a system computes about itself will look plausible long before it means anything. Over one week of auditing, five separate subsystems that *appeared* to be working were found to be measuring nothing:
 
 | What it claimed | What was true |
 |---|---|
@@ -45,8 +45,11 @@ This is the real contribution, and it generalizes far beyond this project.
 | A self-model making falsifiable predictions about its own next state, ~2% accurate | The predictions were **structurally unreachable** — the horizon demanded far more change than the system's own time constants permit. It was measuring a bug, not self-knowledge. Corrected, accuracy went to ~42%. |
 | Six homeostatic drives responding to telemetry | Two had been pinned at their limits for their entire recorded history. Inputs were applied per-tick instead of per unit time, so any persistently-true condition saturated its drive. A side effect: the *timer interval* silently set the system's emotional baseline. |
 | An abstention feature, shipped and enabled | Its trap-detection function was referenced in three places and **defined nowhere**. A dynamic lookup returned undefined, so the branch was permanently false. It could not do its headline job, and an A/B confirmed it changed nothing. |
+| A novelty drive reading exploration telemetry | Pinned at **exactly zero for 13 hours** while the explorer underneath was perfectly healthy. Its input was read every 2 minutes but only changed every 13, so one observation was billed seven times. Created by the *fix* for the drive bug above. |
 
 None of these were exotic. Each looked healthy from the outside. Each was found only by asking *"if this were broken, how would I know?"* and then actually checking.
+
+The last one is the instructive one: it was introduced by the repair of an earlier entry in this same table, and its own first replacement was *also* unreachable — bounded, idempotent, green unit tests, and still incapable of producing the values it was assumed to produce. That was caught only by sweeping the candidate metric across its full range against real production logs. The discipline is not a checklist you finish; it applies most sharply to code written while being careful.
 
 ### The rules that came out of it
 

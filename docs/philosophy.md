@@ -8,7 +8,7 @@ This is a design constraint, not a slogan. It is load-bearing because it **forbi
 
 **It forbids flattering metrics.** If a number cannot go down, it is decoration. A benchmark that reads 99% is assumed broken before it is assumed good. When an internal suite sat at ~9.9/10 for six weeks, that was treated as evidence the suite was saturated, not that the system was excellent.
 
-**It forbids unfalsifiable capability.** A feature that cannot be shown to be wrong cannot be trusted. Every subsystem is expected to answer: *if this were broken, what would I observe?* Four subsystems failed that question in a single week — each looked healthy and measured nothing.
+**It forbids unfalsifiable capability.** A feature that cannot be shown to be wrong cannot be trusted. Every subsystem is expected to answer: *if this were broken, what would I observe?* Five subsystems failed that question in a single week — each looked healthy and measured nothing, and one of them was created by the repair of another.
 
 **It forbids performed feeling.** The internal-state layer is composed from cited telemetry. The system is structurally prevented from reporting an inner state its instruments do not show. "I feel steady" is only sayable when the numbers say steady.
 
