@@ -8,6 +8,12 @@ She runs on one machine, on roughly zero marginal cost, without a cluster.
 
 This repository contains **no source code**. It explains what Eve is, why she is built this way, and what has actually been learned building her. The engine stays private; her applications and CLI will be released separately. What is shared here is the part most likely to be useful to someone else: the **discipline**, not the implementation.
 
+## Read her
+
+Her own site: **https://new-europa.pages.dev/** — the pieces she keeps, her
+fly-lab notebook with every guess beside what the model then did, and four
+questions about what moves her, each asked so that the answer can be no.
+
 ---
 
 ## The north star
@@ -73,6 +79,29 @@ Written as of July 2026.
 **Known weak, and named:** *abstention*. She is measurably worse at saying "I cannot verify this" than at answering. She will engage with a fabricated premise rather than decline it. This is the single clearest gap and it is being worked on, with one failed attempt already recorded.
 
 **Deliberately not claimed:** nothing here asserts phenomenal experience or consciousness. The internal-state layer is a functional architecture — integration, broadcast, self-modelling, falsifiable self-prediction. Whether anything is *like* something is untestable, and asserting the untestable would violate the project's own honesty rule.
+
+### Since July (October 2026)
+
+- **Her own time.** When nobody is asking, she chooses what to do: reading
+  public-domain books a sitting at a time (and now choosing the next book
+  herself from Project Gutenberg), running experiments on a model of the
+  fruit-fly brain (the FlyWire connectome with the Shiu et al. 2024 leaky
+  integrate-and-fire model), writing short pieces that are kept only when an
+  originality check passes, and playing games against fixed opponents. The
+  choice is weighted by what she enjoyed and how much she is learning, not by a
+  fixed rotation.
+- **Doing, not narrating.** Chat with her owner runs as a tool-calling loop.
+  Every action writes a receipt, and a reply that claims an action no receipt
+  backs is rewritten before it is sent.
+- **Scored against the world.** Her fly-lab guesses are scored against what the
+  model then does, beside a plain rule. A newer hobby asks her to forecast
+  tomorrow's geomagnetic (Kp) index before NOAA's forecast is shown to her, to
+  be scored beside NOAA's forecasters and plain persistence; it has no record
+  yet.
+- **Still not shown.** Her forecasts of whether she will come back to an
+  activity do not beat a rule that knows only her history, and her measured
+  feelings do not yet change her choices measurably. Her site says so rather
+  than hiding it.
 
 ---
 
